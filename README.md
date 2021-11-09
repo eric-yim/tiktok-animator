@@ -1,6 +1,8 @@
 ### Overview
 A python tool for creating 2-D animations from sequences of images.
 
+![Animation](samples/sample.gif)
+
 ### Installation
 Requires python3. Created on Ubuntu.
 ```
