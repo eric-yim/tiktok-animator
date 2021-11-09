@@ -86,10 +86,11 @@ def sample_points(x,xp,fp):
         return np.interp(x,xp,fp)
     return np.array([sample_points(x,xp,fpp) for fpp in fp.T]).T
 
-def fill_in(n_frames,frame_info,dummy_word='frame_'):
+def fill_in(n_frames,frame_info,dummy_word='frame_',strict_start=True):
     def dummy_str(a):
         return dummy_word+str(a)    
     xp = sorted([int(a.replace(dummy_word,'')) for a in frame_info.keys()])
+    first_x = xp[0]
     x = np.arange(0,n_frames)
     the_keys = list(frame_info[dummy_str(xp[0])].keys())
     
@@ -101,7 +102,10 @@ def fill_in(n_frames,frame_info,dummy_word='frame_'):
         fnew = sample_points(x,xp,fp)
 
         for i,f0 in enumerate(fnew):
-            out_info[dummy_word+str(i)][k]=f0
+            if strict_start and (i<first_x):
+                out_info[dummy_word+str(i)]= None
+            else:
+                out_info[dummy_word+str(i)][k]=f0
 
     return out_info
 def get_basic(frame_info):
@@ -115,11 +119,11 @@ def get_basic(frame_info):
 
         
 class ImageController:
-    def __init__(self,n_frames,controller_info):
+    def __init__(self,n_frames,controller_info,strict_start=True):
         self.controller_info = controller_info
         self.n_frames = n_frames
         
-        self.frame_infos = [fill_in(n_frames,a.frame_info) for a in controller_info.layers]
+        self.frame_infos = [fill_in(n_frames,a.frame_info,strict_start=strict_start) for a in controller_info.layers]
         
         self.basic_infos = [get_basic(a) for a in controller_info.layers]
         self.cam_info = controller_info.get('camera',None)
