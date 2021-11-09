@@ -1,0 +1,7 @@
+workspace:  /media/hd0/social_media/current_workspace/images
+background: [1920,1080]
+render:
+  resolution: [1080,1920]
+  display_downscale: 4
+round_borders: True
+yaml_file: kf_data/{}.yaml
